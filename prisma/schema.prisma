@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------- Enums -----------------------------
+
+enum Role {
+  ADMIN
+  MITARBEITER
+}
+
+enum Anrede {
+  HERR
+  FRAU
+  DIVERS
+}
+
+enum KundenStatus {
+  NEUKUNDE
+  BESTANDSKUNDE
+  INAKTIV
+}
+
+enum Sparte {
+  GEBAEUDEREINIGUNG
+  HANDWERK
+  GLAS_SONDER_GARTEN
+  ENERGIE_PERSONAL
+  ALLGEMEIN
+}
+
+enum AngebotsStatus {
+  OFFEN
+  ENTSCHEIDUNG_OFFEN
+  BEAUFTRAGT
+  ABGELEHNT
+}
+
+// ----------------------------- User -----------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(MITARBEITER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ----------------------------- Kunde -----------------------------
+
+model Customer {
+  id                   String        @id @default(cuid())
+  kdNrGebaeudereinigung String?
+  kdNrHandwerk         String?
+  kdNrEnergie          String?
+  name                 String
+  strasse              String?
+  plz                  String?
+  ort                  String?
+  telefon              String?
+  fax                  String?
+  email                String?
+  web                  String?
+  branche              String?
+  status               KundenStatus  @default(NEUKUNDE)
+  entscheider          String?
+  notes                String?
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  contacts  ContactPerson[]
+  buildings Building[]
+  offers    Offer[]
+
+  @@index([name])
+}
+
+// ----------------------------- Ansprechpartner -----------------------------
+
+model ContactPerson {
+  id                     String   @id @default(cuid())
+  anrede                 Anrede?
+  vorname                String?
+  nachname               String
+  email                  String?
+  telefon                String?
+  rolle                  String?
+  firma                  String?
+  isHauptansprechpartner Boolean  @default(false)
+  notes                  String?
+  customerId             String
+  buildingId             String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  customer Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  building Building? @relation(fields: [buildingId], references: [id], onDelete: SetNull)
+
+  @@index([customerId])
+  @@index([buildingId])
+}
+
+// ----------------------------- Objekt -----------------------------
+
+model Building {
+  id              String   @id @default(cuid())
+  customerId      String
+  objektNummer    String?
+  auftragsNummer  String?
+  kategorie       String?
+  name            String
+  strasse         String?
+  plz             String?
+  ort             String?
+  bereich         Sparte?
+  verantwortlicher String?
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  customer Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  contacts ContactPerson[]
+  offers   Offer[]
+
+  @@index([customerId])
+}
+
+// ----------------------------- Angebot -----------------------------
+
+model Offer {
+  id               String         @id @default(cuid())
+  customerId       String
+  buildingId       String?
+  sparte           Sparte
+  angebotsNummer   String?
+  angebotsDatum    DateTime?
+  angebotsSumme    Float?
+  status           AngebotsStatus @default(OFFEN)
+  auftragsDatum    DateTime?
+  auftragsSumme    Float?
+  verantwortlicher String?
+  bearbeiter       String?
+  beschreibung     String?
+  // Handwerk-spezifisch
+  gewerk           String?
+  bauphaseBeginn   DateTime?
+  bauphaseEnde     DateTime?
+  rechnungNummer   String?
+  rechnungDatum    DateTime?
+  rechnungSumme    Float?
+  rgBezahlt        Boolean?
+  notes            String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  customer Customer  @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  building Building? @relation(fields: [buildingId], references: [id], onDelete: SetNull)
+
+  @@index([customerId])
+  @@index([status])
+  @@index([sparte])
+}

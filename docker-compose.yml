@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: jolmescrm
+      POSTGRES_USER: crm
+      POSTGRES_PASSWORD: crm
+    ports:
+      - "5433:5432"
+    volumes:
+      - jolmescrm_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crm -d jolmescrm"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  jolmescrm_db:
