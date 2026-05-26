@@ -41,35 +41,48 @@ export default async function CustomerDetailPage({
           </span>
         </div>
 
-        {/* Stammdaten */}
-        <div className="bg-white rounded-lg shadow p-6 mb-6">
-          <h2 className="text-lg font-semibold mb-4">Stammdaten</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <div className="text-sm text-gray-500">Adresse</div>
-              <div className="font-medium">
-                {customer.strasse ?? '–'}<br />
-                {customer.plz} {customer.ort}
-              </div>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Kontakt</div>
-              <div className="font-medium">
-                {customer.telefon && <div>📞 {customer.telefon}</div>}
-                {customer.email && <div>✉️ {customer.email}</div>}
-                {!customer.telefon && !customer.email && '–'}
-              </div>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Branche</div>
-              <div className="font-medium">{customer.branche ?? '–'}</div>
-            </div>
-            <div>
-              <div className="text-sm text-gray-500">Entscheider</div>
-              <div className="font-medium">{customer.entscheider ?? '–'}</div>
-            </div>
-          </div>
-        </div>
+ {/* Stammdaten */}
+<div className="bg-white rounded-lg shadow p-6 mb-6">
+  <h2 className="text-lg font-semibold mb-4">Stammdaten</h2>
+  <div className="grid grid-cols-2 gap-4">
+    <div>
+      <div className="text-sm text-gray-500">Adresse</div>
+      <div className="font-medium">
+        {customer.strasse ?? '–'}<br />
+        {customer.plz} {customer.ort}
+      </div>
+    </div>
+    <div>
+      <div className="text-sm text-gray-500">Kontakt</div>
+      <div className="font-medium">
+        {customer.telefon && <div>📞 {customer.telefon}</div>}
+        {customer.email && <div>✉️ {customer.email}</div>}
+        {customer.fax && <div>📠 {customer.fax}</div>}
+        {customer.web && <div>🌐 {customer.web}</div>}
+        {!customer.telefon && !customer.email && '–'}
+      </div>
+    </div>
+    <div>
+      <div className="text-sm text-gray-500">Kundennummern</div>
+      <div className="font-medium text-sm">
+        {customer.kdNrGebaeudereinigung && <div>Gebäudereinigung: {customer.kdNrGebaeudereinigung}</div>}
+        {customer.kdNrHandwerk && <div>Handwerk: {customer.kdNrHandwerk}</div>}
+        {customer.kdNrEnergie && <div>Energie/Personal: {customer.kdNrEnergie}</div>}
+        {customer.interessentennummer && <div>Interessent: {customer.interessentennummer}</div>}
+        {!customer.kdNrGebaeudereinigung && !customer.kdNrHandwerk && !customer.kdNrEnergie && '–'}
+      </div>
+    </div>
+    <div>
+      <div className="text-sm text-gray-500">Weitere Infos</div>
+      <div className="font-medium text-sm">
+        {customer.branche && <div>Branche: {customer.branche}</div>}
+        {customer.entscheider && <div>Entscheider: {customer.entscheider}</div>}
+        {customer.notes && <div>Hauptansprechpartner: {customer.notes}</div>}
+        {!customer.branche && !customer.entscheider && '–'}
+      </div>
+    </div>
+  </div>
+</div>
 
         {/* Ansprechpartner */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">
