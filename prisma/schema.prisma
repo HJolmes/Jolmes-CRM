@@ -48,6 +48,7 @@ model User {
   name         String
   passwordHash String
   role         Role     @default(MITARBEITER)
+  sparte    Sparte?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
@@ -95,12 +96,12 @@ model ContactPerson {
   firma                  String?
   isHauptansprechpartner Boolean  @default(false)
   notes                  String?
-  customerId             String
+  customerId             String?
   buildingId             String?
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
 
-  customer Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer Customer?  @relation(fields: [customerId], references: [id], onDelete: Cascade)
   building Building? @relation(fields: [buildingId], references: [id], onDelete: SetNull)
 
   @@index([customerId])
