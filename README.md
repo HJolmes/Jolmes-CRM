@@ -1,36 +1,277 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Jolmes CRM – Dokumentation
 
-## Getting Started
+**Version:** 0.1.0  
+**Stand:** 26.05.2026  
+**Entwicklerin:** N. Alaoui (Werkstudentin)
 
-First, run the development server:
+---
+
+## 📋 Übersicht
+
+Jolmes CRM ist eine webbasierte Kundenverwaltung für die Jolmes GmbH. Es ersetzt das bisherige SharePoint-CRM und bietet eine moderne, schnelle Oberfläche für die Verwaltung von Kunden, Objekten, Ansprechpartnern und Angeboten.
+
+---
+
+## 🏗️ Tech-Stack
+
+| Technologie | Verwendung |
+|---|---|
+| Next.js 16 + TypeScript | Frontend + Backend (App Router) |
+| PostgreSQL 16 | Datenbank |
+| Prisma ORM | Datenbankzugriff |
+| Auth.js v5 | Login / Authentifizierung |
+| Tailwind CSS | Styling |
+| Docker + Docker Compose | Lokale Entwicklung |
+
+---
+
+## 🚀 Setup (lokale Entwicklung)
+
+### Voraussetzungen
+- Node.js 22+
+- Docker Desktop
+- Git
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 1. Repository klonen
+git clone https://github.com/HJolmes/Jolmes-CRM crm
+cd crm
+
+# 2. Abhängigkeiten installieren
+npm install
+
+# 3. Umgebungsvariablen erstellen
+# Erstelle eine .env Datei mit folgendem Inhalt:
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**.env Datei:**
+```env
+DATABASE_URL="postgresql://crm:crm@localhost:5433/jolmescrm?schema=public"
+AUTH_SECRET="dein-geheimes-secret-hier"
+AUTH_TRUST_HOST="true"
+NEXTAUTH_URL="http://localhost:3001"
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# 4. Datenbank starten
+docker compose up -d
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# 5. Datenbank-Schema erstellen
+npx prisma migrate dev
 
-## Learn More
+# 6. Admin-User erstellen
+npx ts-node --esm prisma/seed.ts
 
-To learn more about Next.js, take a look at the following resources:
+# 7. App starten
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+App läuft unter: `http://localhost:3001`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Standard-Login
+- **Email:** admin@jolmes.de
+- **Passwort:** admin123
 
-## Deploy on Vercel
+⚠️ **Passwort nach erstem Login ändern!**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📁 Projektstruktur
+
+```
+crm/
+├── app/
+│   ├── (app)/                    # Geschützte Seiten (mit Sidebar)
+│   │   ├── customers/            # Kundenliste + Detailseite
+│   │   ├── buildings/            # Objektliste
+│   │   ├── contacts/             # Ansprechpartner
+│   │   └── offers/               # Angebote (in Entwicklung)
+│   ├── api/                      # API Routes
+│   │   ├── customers/            # Kunden CRUD
+│   │   ├── contacts/             # Ansprechpartner CRUD
+│   │   ├── buildings/            # Objekte CRUD
+│   │   └── auth/                 # Auth.js Handler
+│   ├── components/               # Wiederverwendbare Komponenten
+│   │   ├── Sidebar.tsx           # Navigation links
+│   │   ├── LogoutButton.tsx      # Abmelden Button
+│   │   └── ScrollToTop.tsx       # Scroll-to-Top Button
+│   └── login/                    # Login-Seite
+├── prisma/
+│   ├── schema.prisma             # Datenbankmodell
+│   ├── seed.ts                   # Admin-User erstellen
+│   ├── import-customers.ts       # Kunden aus Excel importieren
+│   ├── import-buildings.ts       # Objekte aus Excel importieren
+│   ├── import-contacts-v2.ts     # Ansprechpartner importieren
+│   └── migrations/               # SQL-Migrationen
+├── docker-compose.yml            # PostgreSQL Container
+└── middleware.ts                 # Auth-Schutz für alle Seiten
+```
+
+---
+
+## 🗄️ Datenbankmodell
+
+### Customer (Kunde)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| id | String | Eindeutige ID |
+| name | String | Firmenname |
+| kdNrGebaeudereinigung | String? | Kundennummer Gebäudereinigung |
+| kdNrHandwerk | String? | Kundennummer Handwerk |
+| kdNrEnergie | String? | Kundennummer Energie/Personal |
+| interessentennummer | String? | Interessentennummer |
+| strasse | String? | Straße |
+| plz | String? | Postleitzahl |
+| ort | String? | Ort |
+| telefon | String? | Telefonnummer |
+| fax | String? | Faxnummer |
+| email | String? | E-Mail |
+| web | String? | Webseite |
+| branche | String? | Branche |
+| entscheider | String? | Entscheider |
+| status | KundenStatus? | AKTIV / INAKTIV |
+| notes | String? | Notizen / Hauptansprechpartner |
+
+### ContactPerson (Ansprechpartner)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| id | String | Eindeutige ID |
+| anrede | Anrede? | HERR / FRAU / DIVERS |
+| vorname | String? | Vorname |
+| nachname | String | Nachname (Pflicht) |
+| email | String? | E-Mail |
+| telefon | String? | Telefon |
+| rolle | String? | Rolle/Funktion |
+| isHauptansprechpartner | Boolean | Hauptansprechpartner? |
+| customerId | String | Verknüpfung zu Kunde |
+| buildingId | String? | Verknüpfung zu Objekt |
+
+### Building (Objekt)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| id | String | Eindeutige ID |
+| customerId | String | Verknüpfung zu Kunde |
+| name | String | Objektbezeichnung |
+| objektNummer | String? | Objektnummer |
+| auftragsNummer | String? | Auftragsnummer |
+| kategorie | String? | Kategorie (a/b/c) |
+| strasse | String? | Straße |
+| plz | String? | PLZ |
+| ort | String? | Ort |
+| bereich | Sparte? | Sparte (GEBAEUDEREINIGUNG etc.) |
+| verantwortlicher | String? | Interner Verantwortlicher |
+
+### Offer (Angebot/Auftrag)
+| Feld | Typ | Beschreibung |
+|---|---|---|
+| id | String | Eindeutige ID |
+| customerId | String | Verknüpfung zu Kunde |
+| buildingId | String? | Verknüpfung zu Objekt |
+| sparte | Sparte | GEBAEUDEREINIGUNG / HANDWERK etc. |
+| angebotsNummer | String? | Angebotsnummer |
+| angebotsDatum | DateTime? | Angebotsdatum |
+| angebotsSumme | Float? | Angebotssumme netto |
+| status | AngebotsStatus | OFFEN / BEAUFTRAGT / ABGELEHNT |
+| gewerk | String? | Gewerk (nur Handwerk) |
+| bauphaseBeginn | DateTime? | Bauphase Beginn |
+| bauphaseEnde | DateTime? | Bauphase Ende |
+| rechnungNummer | String? | Rechnungsnummer |
+| rechnungSumme | Float? | Rechnungssumme |
+| rgBezahlt | Boolean? | Rechnung bezahlt? |
+
+---
+
+## 📊 Importierte Daten (Stand 26.05.2026)
+
+| Daten | Anzahl | Quelle |
+|---|---|---|
+| Kunden | 7.298 | SharePoint Kundenliste |
+| Objekte | 1.258 | SharePoint Objektliste |
+| Ansprechpartner | 208 | SharePoint Objektliste (Hauptansprechpartner) |
+| Angebote | 0 | Noch nicht importiert |
+
+---
+
+## ✅ Fertige Features
+
+- **Login/Logout** mit Email + Passwort
+- **Kundenliste** mit Suche (Name, Ort, KdNr)
+- **Kunden-Detailseite** (alle Felder, Ansprechpartner, Objekte)
+- **Kunden anlegen** und **bearbeiten**
+- **Ansprechpartner** hinzufügen pro Kunde
+- **Objekte** hinzufügen pro Kunde
+- **Objektliste** mit Suche
+- **Ansprechpartner-Liste** mit Suche
+- **Sidebar-Navigation**
+- **Import-Skripte** für alle SharePoint-Listen
+
+---
+
+## 🔄 Noch offen (Roadmap)
+
+### Phase 2 – Angebote/Aufträge
+- [ ] Angebote aus SharePoint importieren (4 Listen: UR, Glas, Handwerk, Allgemein)
+- [ ] Angebots-Liste mit Filter nach Sparte
+- [ ] Neues Angebot anlegen
+- [ ] Status-Workflow (Offen → Beauftragt → Abgelehnt)
+- [ ] Handwerk-spezifisch: Bauphase, Rechnung, Zahlung
+
+### Phase 3 – Erweiterungen
+- [ ] Dashboard mit Übersicht (Anzahl Kunden, Objekte, offene Angebote)
+- [ ] Benutzer-Verwaltung (Mitarbeiter anlegen)
+- [ ] Microsoft-Login (Azure AD / Entra ID)
+- [ ] Objekt-Detailseite mit Bearbeiten
+- [ ] Ansprechpartner bearbeiten
+- [ ] Filter in allen Listen (nach Sparte, Status, Ort)
+
+### Phase 4 – Deployment
+- [ ] Server einrichten (Hetzner oder Firmen-Server)
+- [ ] Docker Compose für Produktion
+- [ ] Automatische Backups
+- [ ] HTTPS mit eigenem Zertifikat
+
+### Phase 5 – Verbindung mit LV-Kalkulator
+- [ ] Gemeinsame Datenbank oder API
+- [ ] Kunde im CRM = Kunde im LV-Kalkulator
+
+---
+
+## 🔧 Nützliche Befehle
+
+```bash
+# App starten
+docker compose up -d      # Datenbank starten
+npm run dev               # App starten
+
+# Datenbank
+npx prisma migrate dev    # Migration ausführen
+npx prisma generate       # Prisma Client neu generieren
+npx prisma studio         # Datenbank im Browser anschauen
+
+# Daten importieren
+npx ts-node --esm prisma/import-customers.ts "pfad/zur/datei.xlsx"
+npx ts-node --esm prisma/import-buildings.ts "pfad/zur/datei.xlsx"
+npx ts-node --esm prisma/import-contacts-v2.ts "pfad/zur/datei.xlsx"
+
+# Git
+git add .
+git commit -m "feat: beschreibung"
+git push origin feature/auth
+```
+
+---
+
+## ⚠️ Wichtige Hinweise
+
+- `docker compose down -v` **NIEMALS** benutzen – löscht alle Daten!
+- Die `.env` Datei **niemals** auf GitHub pushen – sie enthält Passwörter
+- Vor jedem neuen Feature: neuen Branch erstellen
+- Nach jedem Feature: Code pushen und Pull Request erstellen
+
+---
+
+## 📞 Kontakt
+
+Bei Fragen: Nada Alaoui Ismaili (Werkstudentin IT)
