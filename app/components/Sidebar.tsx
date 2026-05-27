@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import LogoutButton from './LogoutButton'
 
 const links = [
+  { href: '/dashboard', label: '📊 Dashboard' },
   { href: '/customers', label: '👤 Kunden' },
   { href: '/buildings', label: '🏢 Objekte' },
   { href: '/contacts', label: '🧑‍💼 Ansprechpartner' },
