@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
 import ScrollToTop from '@/app/components/ScrollToTop'
-import LogoutButton from '@/app/components/LogoutButton'
+
 
 export default async function CustomersPage({
   searchParams,
@@ -32,13 +32,6 @@ export default async function CustomersPage({
             Kundenliste ({customers.length})
           </h1>
           <div className="flex gap-3 items-center">
-            <LogoutButton />
-             <Link
-    href="/buildings"
-    className="border px-4 py-2 rounded-lg hover:bg-gray-50 text-sm"
-  >
-    Objektliste
-  </Link>
             <Link
               href="/customers/new"
               className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700"

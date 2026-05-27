@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import LogoutButton from './LogoutButton'
+import { signOut } from 'next-auth/react'
 
 const links = [
   { href: '/dashboard', label: '📊 Dashboard' },
@@ -16,7 +16,7 @@ export default function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="w-56 min-h-screen bg-white border-r flex flex-col">
+    <aside className="w-56 h-screen sticky top-0 bg-white border-r flex flex-col pb-16">
       <div className="p-4 border-b">
         <h1 className="text-lg font-bold text-teal-600">Jolmes CRM</h1>
       </div>
@@ -36,7 +36,12 @@ export default function Sidebar() {
         ))}
       </nav>
       <div className="p-4 border-t">
-        <LogoutButton />
+        <button
+          onClick={() => signOut({ callbackUrl: '/login' })}
+          className="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+        >
+          🚪 Abmelden
+        </button>
       </div>
     </aside>
   )
