@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
-import ScrollToTop from '@/app/components/ScrollToTop'
+
 
 
 export default async function CustomersPage({
@@ -96,7 +96,7 @@ export default async function CustomersPage({
           </table>
         )}
       </div>
-      <ScrollToTop />
+    
     </div>
   )
 }

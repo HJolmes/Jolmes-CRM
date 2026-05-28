@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
-import ScrollToTop from '@/app/components/ScrollToTop'
+
 
 export default async function BuildingsPage({
   searchParams,
@@ -28,9 +28,7 @@ export default async function BuildingsPage({
           <h1 className="text-2xl font-bold text-gray-900">
             Objektliste ({buildings.length})
           </h1>
-          <Link href="/customers" className="border px-4 py-2 rounded-lg hover:bg-gray-50 text-sm">
-            ← Kundenliste
-          </Link>
+        
         </div>
 
         <form className="mb-6">
@@ -82,7 +80,7 @@ export default async function BuildingsPage({
           </table>
         )}
       </div>
-      <ScrollToTop />
+     
     </div>
   )
 }

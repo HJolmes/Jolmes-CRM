@@ -168,3 +168,18 @@ model Offer {
   @@index([status])
   @@index([sparte])
 }
+//-----------------------------Feedback---------------------------------
+enum FeedbackStatus {
+  OFFEN
+  IN_ARBEIT
+  ERLEDIGT
+  VERWORFEN
+}
+
+model Feedback {
+  id        String         @id @default(cuid())
+  type      String
+  text      String
+  status    FeedbackStatus @default(OFFEN)
+  createdAt DateTime       @default(now())
+}

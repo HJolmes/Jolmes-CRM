@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
 import Link from 'next/link'
-import ScrollToTop from '@/app/components/ScrollToTop'
+
 
 export default async function ContactsPage({
   searchParams,
@@ -69,18 +69,22 @@ export default async function ContactsPage({
                   <td className="p-4 text-gray-600 text-sm">{c.rolle ?? '–'}</td>
                   <td className="p-4 text-gray-600 text-sm">{c.email ?? '–'}</td>
                   <td className="p-4 text-gray-600 text-sm">{c.telefon ?? '–'}</td>
-                  <td className="p-4">
-                    <Link href={`/customers/${c.customerId}`} className="text-teal-600 hover:underline text-sm">
-                      {c.customer.name}
-                    </Link>
-                  </td>
+                 <td className="p-4">
+  {c.customer ? (
+    <Link href={`/customers/${c.customerId}`} className="text-teal-600 hover:underline text-sm">
+      {c.customer.name}
+    </Link>
+  ) : (
+    <span className="text-gray-400 text-sm">–</span>
+  )}
+</td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
       </div>
-      <ScrollToTop />
+      
     </div>
   )
 }

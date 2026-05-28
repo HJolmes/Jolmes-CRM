@@ -5,11 +5,12 @@ import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 
 const links = [
-  { href: '/dashboard', label: '📊 Dashboard' },
-  { href: '/customers', label: '👤 Kunden' },
-  { href: '/buildings', label: '🏢 Objekte' },
-  { href: '/contacts', label: '🧑‍💼 Ansprechpartner' },
-  { href: '/offers', label: '📋 Angebote' },
+  { href: '/dashboard',   label: '📊 Dashboard' },
+  { href: '/customers',   label: '👤 Kunden' },
+  { href: '/buildings',   label: '🏢 Objekte' },
+  { href: '/contacts',    label: '🧑‍💼 Ansprechpartner' },
+  { href: '/offers',      label: '📋 Angebote' },
+  { href: '/feedback',    label: '💬 Feedback' },
 ]
 
 export default function Sidebar() {

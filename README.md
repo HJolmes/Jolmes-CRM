@@ -96,7 +96,6 @@ crm/
 │   ├── components/               # Wiederverwendbare Komponenten
 │   │   ├── Sidebar.tsx           # Navigation links
 │   │   ├── LogoutButton.tsx      # Abmelden Button
-│   │   └── ScrollToTop.tsx       # Scroll-to-Top Button
 │   └── login/                    # Login-Seite
 ├── prisma/
 │   ├── schema.prisma             # Datenbankmodell
